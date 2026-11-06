@@ -1,0 +1,8 @@
+{% if candidate.processing_status == 'pending' or candidate.processing_status == 'processing' %}
+<span class="status-dot is-{{ candidate.processing_status }}"
+      hx-get="{% url 'candidates:status_badge' candidate.pk %}"
+      hx-trigger="load delay:3s"
+      hx-swap="outerHTML">{{ candidate.get_processing_status_display }}</span>
+{% else %}
+<span class="status-dot is-{{ candidate.processing_status }}">{{ candidate.get_processing_status_display }}</span>
+{% endif %}

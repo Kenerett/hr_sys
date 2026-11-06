@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}HR Intelligence{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/inter.css' %}">
+    <link rel="stylesheet" href="{% static 'custom.css' %}">
+    <script src="{% static 'htmx.min.js' %}"></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar d-none d-lg-flex flex-column">
+            <a href="{% url 'dashboard' %}" class="sidebar-brand"><span class="brand-mark"></span>HR Intelligence</a>
+            <nav class="sidebar-nav">
+                <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><i class="bi bi-grid"></i> Overview</a>
+                <a href="{% url 'candidates:list' %}" class="{% if request.resolver_match.app_name == 'candidates' and request.resolver_match.url_name == 'list' %}active{% endif %}"><i class="bi bi-people"></i> Candidates</a>
+                <a href="{% url 'candidates:ai_search' %}" class="{% if request.resolver_match.url_name == 'ai_search' %}active{% endif %}"><i class="bi bi-robot"></i> Ask AI</a>
+                <a href="{% url 'candidates:upload' %}" class="{% if request.resolver_match.url_name == 'upload' %}active{% endif %}"><i class="bi bi-upload"></i> Upload CV</a>
+                <a href="{% url 'vacancies:list' %}" class="{% if request.resolver_match.app_name == 'vacancies' %}active{% endif %}"><i class="bi bi-briefcase"></i> Vacancies</a>
+            </nav>
+        </aside>
+
+        <header class="topbar d-lg-none">
+            <a href="{% url 'dashboard' %}" class="sidebar-brand"><span class="brand-mark"></span>HR Intelligence</a>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav">
+                <i class="bi bi-list"></i>
+            </button>
+        </header>
+
+        <div class="offcanvas offcanvas-start d-lg-none" id="mobileNav">
+            <div class="offcanvas-header">
+                <span class="sidebar-brand"><span class="brand-mark"></span>HR Intelligence</span>
+                <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column">
+                <nav class="sidebar-nav">
+                    <a href="{% url 'dashboard' %}"><i class="bi bi-grid"></i> Overview</a>
+                    <a href="{% url 'candidates:list' %}"><i class="bi bi-people"></i> Candidates</a>
+                    <a href="{% url 'candidates:ai_search' %}"><i class="bi bi-robot"></i> Ask AI</a>
+                    <a href="{% url 'candidates:upload' %}"><i class="bi bi-upload"></i> Upload CV</a>
+                    <a href="{% url 'vacancies:list' %}"><i class="bi bi-briefcase"></i> Vacancies</a>
+                </nav>
+            </div>
+        </div>
+
+        <main class="main-content">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

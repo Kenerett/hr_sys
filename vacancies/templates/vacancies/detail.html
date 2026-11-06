@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ vacancy.title }} — HR Intelligence{% endblock %}
+{% block content %}
+<p><a href="{% url 'vacancies:list' %}" class="text-decoration-none">&larr; Back to vacancies</a></p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="d-flex align-items-center gap-2 mb-0">
+        {{ vacancy.title }}
+        <span class="status-dot is-{{ vacancy.status }}">{{ vacancy.get_status_display }}</span>
+    </h2>
+    <form method="post" action="{% url 'vacancies:delete' vacancy.pk %}"
+          onsubmit="return confirm('Delete vacancy &quot;{{ vacancy.title|escapejs }}&quot;? This cannot be undone.');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Delete</button>
+    </form>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h6 class="text-muted text-uppercase small mb-3">Requirements (extracted by AI)</h6>
+        <p><strong>Seniority:</strong> {{ vacancy.get_seniority_display|default:"—" }}</p>
+        <p><strong>Experience from:</strong> {{ vacancy.min_experience_years|default:"—" }} years</p>
+        <p><strong>Education:</strong> {{ vacancy.get_required_education_level_display|default:"—" }}</p>
+
+        <h6 class="text-muted text-uppercase small mt-4 mb-2">Must-have skills (hard filter)</h6>
+        <div class="d-flex flex-wrap gap-1">
+            {% for skill in vacancy.must_have_skills %}<span class="tag">{{ skill }}</span>{% empty %}<span class="text-muted">—</span>{% endfor %}
+        </div>
+
+        <h6 class="text-muted text-uppercase small mt-4 mb-2">Nice-to-have skills</h6>
+        <div class="d-flex flex-wrap gap-1">
+            {% for skill in vacancy.nice_to_have_skills %}<span class="tag">{{ skill }}</span>{% empty %}<span class="text-muted">—</span>{% endfor %}
+        </div>
+
+        <h6 class="text-muted text-uppercase small mt-4 mb-2">Language requirements</h6>
+        {% for lang in vacancy.required_languages %}<p class="mb-1">{{ lang.language }} — at least {{ lang.min_level }}</p>{% empty %}<p class="text-muted">—</p>{% endfor %}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h6 class="text-muted text-uppercase small mb-3">Original description</h6>
+        <pre class="small bg-light p-2 rounded" style="white-space: pre-wrap;">{{ vacancy.raw_description }}</pre>
+    </div>
+</div>
+
+<form method="post" action="{% url 'vacancies:run_match' vacancy.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary"><i class="bi bi-magic"></i> Find matching candidates</button>
+</form>
+{% endblock %}
